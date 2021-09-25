@@ -1,0 +1,48 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Armed forces personnel (% of total labor force)",
+  "width": 800,
+  "height": 600,
+  "projection": {"type": "equirectangular"},
+  "params": [
+    {
+      "name": "Year_Selection",
+      "value": 2018,
+      "bind": {"input": "range", "min": 2000, "max": 2018, "step": 1}
+    }
+  ],
+  "data": {
+    "url": "https://raw.githubusercontent.com/Daryl-Loo/FIT3179/ba64774edd7c9f957ea5ea6bc67c17195ef8f34c/cleaned%20data/longMilitaryProportionToPopulation.csv"
+  },
+  "transform": [
+    {
+      "lookup": "Country Code",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/Daryl-Loo/FIT3179/main/map/WB_countries_Admin0_topojson.json",
+          "format": {"type": "topojson", "feature": "name"}
+        },
+        "key": "properties.ISO_A3"
+      },
+      "as": "geo"
+    },
+    {"filter": "datum.Year == Year_Selection"}
+  ],
+  "mark": {"type": "geoshape"},
+  "encoding": {
+    "shape": {"field": "geo", "type": "geojson"},
+    "color": {
+      "field": "Proportion",
+      "type": "quantitative",
+      "scale": {"scheme": "blues"}
+    },
+    "tooltip": [
+      {"field": "Country Name", "type": "nominal", "title": "Country"},
+      {
+        "field": "Proportion",
+        "type": "quantitative",
+        "title": "Armed forces personnel (% of total labor force)"
+      }
+    ]
+  }
+}
